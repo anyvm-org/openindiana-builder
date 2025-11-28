@@ -1,11 +1,11 @@
 
 
-[![Build](https://github.com/vmactions/openindiana-builder/actions/workflows/build.yml/badge.svg)](https://github.com/vmactions/openindiana-builder/actions/workflows/build.yml)
+[![Build](https://github.com/anyvm-org/openindiana-builder/actions/workflows/build.yml/badge.svg)](https://github.com/anyvm-org/openindiana-builder/actions/workflows/build.yml)
 
 Latest: 
 
 
-The image builder for [openindiana-vm](https://github.com/vmactions/openindiana-vm)
+The image builder for `openindiana``
 
 
 How to use:
