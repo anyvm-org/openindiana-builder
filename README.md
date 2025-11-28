@@ -5,7 +5,7 @@
 Latest: 
 
 
-The image builder for `openindiana``
+The image builder for `openindiana`
 
 
 How to use:
