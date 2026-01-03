@@ -267,6 +267,8 @@ bootadm set-menu timeout=1
 
 pkg update
 
+echo "PerSourcePenaltyMax none" >>/etc/ssh/sshd_config
+
 
 
 
