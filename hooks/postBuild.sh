@@ -264,10 +264,11 @@ ln -s /etc/init.d/enable-$e1000g0 /etc/rc3.d/S99enable-$e1000g0
 
 bootadm set-menu timeout=1
 
+echo "PerSourcePenaltyMax none" >>/etc/ssh/sshd_config
 
 pkg update
 
-echo "PerSourcePenaltyMax none" >>/etc/ssh/sshd_config
+
 
 
 
