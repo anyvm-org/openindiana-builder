@@ -25,6 +25,7 @@ echo "PermitRootLogin yes" >>/etc/ssh/sshd_config
 
 
 echo "PubkeyAuthentication yes" >>/etc/ssh/sshd_config
+echo "MaxStartups 100:30:200" >>/etc/ssh/sshd_config
 
 echo "" >>/etc/ssh/sshd_config
 
