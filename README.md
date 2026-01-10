@@ -8,6 +8,20 @@ Latest: v2.0.3
 The image builder for `openindiana`
 
 
+All the supported releases are here:
+
+
+
+| Release | x86_64  |
+|---------|---------|
+| 202510  |  ✅    |
+
+
+
+
+
+
+
 How to use:
 
 1. Use the [manual.yml](.github/workflows/manual.yml) to build manually.
