@@ -264,6 +264,7 @@ ln -s /etc/init.d/enable-$e1000g0 /etc/rc3.d/S99enable-$e1000g0
 
 bootadm set-menu timeout=1
 
+ipadm show-addr -p -o ADDROBJ | grep "/v6" | xargs -n 1 ipadm delete-addr
 
 pkg update
 
