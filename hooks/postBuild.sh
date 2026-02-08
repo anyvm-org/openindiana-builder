@@ -278,6 +278,9 @@ pkg update
 
 
 
+history -c
+
+
 
 
 
