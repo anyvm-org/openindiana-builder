@@ -274,7 +274,7 @@ bootadm set-menu timeout=1
 
 ipadm show-addr -p -o ADDROBJ | grep "/v6" | xargs -n 1 ipadm delete-addr
 
-history -c
+
 
 pkg update
 
