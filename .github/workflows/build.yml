@@ -39,7 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["202510"]
+        os: ["202510", "202510-build"]
     runs-on: ubuntu-24.04
     env:
       SEC_VBOX : ${{ vars.SEC_VBOX }}
