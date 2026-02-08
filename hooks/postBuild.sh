@@ -276,6 +276,9 @@ ipadm show-addr -p -o ADDROBJ | grep "/v6" | xargs -n 1 ipadm delete-addr
 
 
 
+pfexec pkg set-publisher -g https://pkg.openindiana.org/hipster/ -G http://pkg.openindiana.org/hipster/ openindiana.org
+
+
 pkg update
 
 
