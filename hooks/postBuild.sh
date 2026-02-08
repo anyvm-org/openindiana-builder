@@ -216,7 +216,15 @@ echo "========================================"
 
 
 
+echo '=================== set up swap ===='
+zfs create -V 8g rpool/swap
 
+
+
+swap -a /dev/zvol/dsk/rpool/swap
+
+
+echo "/dev/zvol/dsk/rpool/swap\t-\t-\tswap\t-\tno\t-" >> /etc/vfstab
 
 
 
