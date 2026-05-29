@@ -1,0 +1,42 @@
+
+
+To select the keyboard layout | enter
+
+select the language you wish to use | enter
+
+Please enter a numbe  | enter; sleep 5; f2
+
+Primary Size | f2; sleep 5; tab; enter
+
+Use the whole disk | f2;
+
+
+Enter a name for this computer | tab; f2
+
+Select the region | f2;
+
+Date and Time | f2
+
+System Root Password | string anyvm.org ; tab ; string anyvm.org ; f2 ;
+
+
+
+Installation Summary | f2
+
+
+
+
+
+
+
+Reboot to start the newly | f8
+
+
+#syncing file systems... done | sleep 1
+
+#System is halted. It is now safe to power it off | sleep 1
+
+
+
+
+

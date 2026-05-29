@@ -214,7 +214,7 @@ log_success "ZFS pool expansion script completed!"
 echo "========================================"
 
 
-
+if cat /etc/release | grep '2025.10'; then
 
 echo '=================== set up swap ===='
 zfs create -V 8g rpool/swap
@@ -226,6 +226,7 @@ swap -a /dev/zvol/dsk/rpool/swap
 
 echo "/dev/zvol/dsk/rpool/swap\t-\t-\tswap\t-\tno\t-" >> /etc/vfstab
 
+fi
 
 
 
@@ -233,14 +234,19 @@ echo "/dev/zvol/dsk/rpool/swap\t-\t-\tswap\t-\tno\t-" >> /etc/vfstab
 
 echo '=================== start ===='
 
-
-svcadm disable application/desktop-cache/input-method-cache:default
-
 svcadm disable autofs
+
+
+if cat /etc/release | grep '2025.10'; then
+svcadm disable application/desktop-cache/input-method-cache:default
 
 
 echo "openindiana" > /etc/nodename
 svcadm restart system/identity:node
+
+fi
+
+
 
 e1000g0=$(dladm show-link | grep up | head -1 | cut -d ' ' -f 1)
 echo "e1000g0=$e1000g0"
@@ -275,9 +281,10 @@ bootadm set-menu timeout=1
 ipadm show-addr -p -o ADDROBJ | grep "/v6" | xargs -n 1 ipadm delete-addr
 
 
-
+if cat /etc/release | grep '2025.10'; then
 pfexec pkg set-publisher -g https://pkg.openindiana.org/hipster/ -G http://pkg.openindiana.org/hipster/ openindiana.org
 
+fi
 
 pkg update
 
