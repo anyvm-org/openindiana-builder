@@ -3,7 +3,7 @@
 [![Build](https://github.com/anyvm-org/openindiana-builder/actions/workflows/build.yml/badge.svg)](https://github.com/anyvm-org/openindiana-builder/actions/workflows/build.yml)
 [![Release](https://img.shields.io/github/v/release/anyvm-org/openindiana-builder?include_prereleases&sort=semver)](https://github.com/anyvm-org/openindiana-builder/releases)
 
-Latest: v2.0.8
+Latest: v2.0.9
 
 
 The image builder for `openindiana`
