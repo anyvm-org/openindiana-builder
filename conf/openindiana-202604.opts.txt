@@ -1,42 +1,55 @@
+# OpenIndiana 202604 text-installer (Caiman TUI) unattended-install opts.
+#
+# Keywords match case-sensitively as literal substrings of the OCR'd screen
+# (plain tesseract; VM_OCR is unset for this release). They were picked from a
+# local frame-by-frame run to be the substrings tesseract reads RELIABLY --
+# several obvious labels are unusable because tesseract mangles them on this
+# TUI's font:
+#   "whole"    -> "uhole"    (disk screen keyed on "partition table was not
+#                             found", not "Use the whole disk")
+#   "name"     -> "nane"     (hostname screen keyed on "ethernet network")
+#   "Password" -> "Passuord" (root-pw screen keyed on "Create a user account")
+#   "Time"     -> mangled     (date screen keyed on "24 hour")
+# No timeouts: each step blocks until its screen's keyword appears, so a missing
+# screen deadlocks here and exposes the real cause instead of racing ahead.
 
-
+# Keyboard layout list (default 47 = US-English).
 To select the keyboard layout | enter
 
+# Language list (default 1 = English).
 select the language you wish to use | enter
 
+# Installer main menu ("Install OpenIndiana" is item 1, the default). enter
+# starts it; f2 continues past the disk-seek into disk selection.
 Please enter a numbe  | enter; sleep 5; f2
 
+# Disk selection ("Where should OpenIndiana be installed?"). f2 accepts the
+# only disk; the GPT-overwrite warning then needs tab+enter to confirm.
 Primary Size | f2; sleep 5; tab; enter
 
-Use the whole disk | f2;
+# Fdisk partitioning: "Use the whole disk (EFI)" is the default radio, f2
+# accepts it. Keyed on the status line because "whole" OCRs as "uhole".
+partition table was not found | f2
 
+# Computer name + wired-network screen. Defaults: name "openindiana", network
+# "Automatically" (DHCP). tab moves off the name field; f2 continues.
+ethernet network | tab; f2
 
-Enter a name for this computer | tab; f2
+# Time-zone region list (default UTC/GMT). f2 accepts and skips straight to the
+# clock screen.
+Select the region | f2
 
-Select the region | f2;
+# Date/time screen ("Edit the date and time as necessary ... 24 hour format").
+24 hour | f2
 
-Date and Time | f2
+# Root password (+ optional user account). Type the password into the root
+# field, tab to Confirm, type it again, f2 (user account left empty). Keyed on
+# "Create a user account" because "Password" OCRs as "Passuord".
+Create a user account | string anyvm.org ; tab ; string anyvm.org ; f2 ;
 
-System Root Password | string anyvm.org ; tab ; string anyvm.org ; f2 ;
-
-
-
+# Final review screen ("Installation Summary"; bottom button is F2_Install).
 Installation Summary | f2
 
-
-
-
-
-
-
+# Completion screen ("Installation Complete ... Reboot to start the newly
+# installed software"). F8 reboots into the freshly installed disk.
 Reboot to start the newly | f8
-
-
-#syncing file systems... done | sleep 1
-
-#System is halted. It is now safe to power it off | sleep 1
-
-
-
-
-
