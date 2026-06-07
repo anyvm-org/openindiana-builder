@@ -37,6 +37,6 @@ How to build:
 
     Just clone the repo. and run:
     ```bash
-    bash build.sh conf/openindiana-202604.conf
+    python3 build.py conf/openindiana-202604.conf
     ```
    
