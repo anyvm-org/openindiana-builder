@@ -92,3 +92,19 @@ jobs:
           openindiana-${{ matrix.os }}.qemu
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
