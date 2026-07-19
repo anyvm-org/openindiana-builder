@@ -54,6 +54,11 @@ rm -f "$HISTFILE" || rm -f ~/.sh_history
 # QEMU runs the build disk with discard=unmap, so trimmed blocks become
 # holes. illumos-gate has had `zpool trim` since 2020, but its -w (wait)
 # flag may be absent, so fall back to a bounded poll of `zpool status -t`.
+# The in-progress marker in `zpool status -t` is "(N% trimmed, started at
+# ...)" and flips to "completed at" when done (verified from real OI and
+# FreeBSD build logs) -- poll for "trimmed, started", NOT "trimming" (that
+# word never appears; the first version of this loop used it, matched
+# nothing, and the shutdown killed the trim at 0%).
 
 echo "=== finalize: image cleanup ==="
 
@@ -70,7 +75,7 @@ for _pool in $(zpool list -H -o name 2>/dev/null); do
     if ! zpool trim -w "${_pool}" 2>/dev/null; then
         if zpool trim "${_pool}"; then
             _i=0
-            while zpool status -t "${_pool}" 2>/dev/null | grep -q "trimming"; do
+            while zpool status -t "${_pool}" 2>/dev/null | grep -q "trimmed, started"; do
                 _i=$((_i + 1))
                 [ "${_i}" -ge 120 ] && { echo "trim wait cap hit"; break; }
                 sleep 5
