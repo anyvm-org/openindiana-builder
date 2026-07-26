@@ -1,0 +1,41 @@
+{
+  "os": "openindiana",
+  "releases": [
+    {
+      "tag": "202510",
+      "release": "202510",
+      "arch": "x86_64",
+      "sync": "rsync,scp,sshfs,nfs",
+      "shutdown": "shutdown -y -i5 -g0",
+      "desktop": false,
+      "build": true
+    },
+    {
+      "tag": "202510-build",
+      "release": "202510-build",
+      "arch": "x86_64",
+      "sync": "rsync,scp,sshfs,nfs",
+      "shutdown": "shutdown -y -i5 -g0",
+      "desktop": false,
+      "build": true
+    },
+    {
+      "tag": "202604",
+      "release": "202604",
+      "arch": "x86_64",
+      "sync": "rsync,scp,sshfs,nfs",
+      "shutdown": "shutdown -y -i5 -g0",
+      "desktop": false,
+      "build": true
+    },
+    {
+      "tag": "202604-build",
+      "release": "202604-build",
+      "arch": "x86_64",
+      "sync": "rsync,scp,sshfs,nfs",
+      "shutdown": "shutdown -y -i5 -g0",
+      "desktop": false,
+      "build": true
+    }
+  ]
+}
