@@ -36,6 +36,24 @@
       "shutdown": "shutdown -y -i5 -g0",
       "desktop": false,
       "build": true
+    },
+    {
+      "tag": "202610",
+      "release": "202610",
+      "arch": "x86_64",
+      "sync": "rsync,scp,sshfs,nfs,tar",
+      "shutdown": "shutdown -y -i5 -g0",
+      "desktop": false,
+      "build": true
+    },
+    {
+      "tag": "202610-build",
+      "release": "202610-build",
+      "arch": "x86_64",
+      "sync": "rsync,scp,sshfs,nfs,tar",
+      "shutdown": "shutdown -y -i5 -g0",
+      "desktop": false,
+      "build": true
     }
   ]
 }
