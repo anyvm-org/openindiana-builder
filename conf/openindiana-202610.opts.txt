@@ -25,7 +25,10 @@ Please enter a numbe  | enter; sleep 5; f2
 
 # Disk selection ("Where should OpenIndiana be installed?"). f2 accepts the
 # only disk; the GPT-overwrite warning then needs tab+enter to confirm.
-Primary Size | f2; sleep 5; tab; enter
+# Keyed on the proposal line, shown once the disk is listed: the 20261030
+# media no longer shows the "Primary Size (GB)" header 202604 keyed on (the
+# rest of the screen OCRs the same), so that key deadlocked here.
+GPT labeled disk was found | f2; sleep 5; tab; enter
 
 # Fdisk partitioning: "Use the whole disk (EFI)" is the default radio, f2
 # accepts it. Keyed on the status line because "whole" OCRs as "uhole".
