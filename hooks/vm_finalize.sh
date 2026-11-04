@@ -52,8 +52,10 @@ rm -f "$HISTFILE" || rm -f ~/.sh_history
 # ZFS -- without a TRIM they stay allocated in the qcow2 and the export-time
 # `qemu-img convert -S 4k` sparsify cannot reclaim them (they are not zero).
 # QEMU runs the build disk with discard=unmap, so trimmed blocks become
-# holes. illumos-gate has had `zpool trim` since 2020, but its -w (wait)
-# flag may be absent, so fall back to a bounded poll of `zpool status -t`.
+# holes -- but only with the extent cap below (see the illumos sata bug).
+# illumos-gate has had `zpool trim` since 2020, but its -w (wait) flag is
+# absent (OI 2026.10: "invalid option 'w'"), so fall back to a bounded poll
+# of `zpool status -t`.
 # The in-progress marker in `zpool status -t` is "(N% trimmed, started at
 # ...)" and flips to "completed at" when done (verified from real OI and
 # FreeBSD build logs) -- poll for "trimmed, started", NOT "trimming" (that
@@ -70,7 +72,46 @@ beadm list 2>/dev/null | awk '$3 == "-" { print $1 }' | while read -r _be; do
     beadm destroy -F "${_be}" || echo "beadm destroy ${_be} failed (non-fatal)"
 done
 
+# Leftover snapshots of the running BE. The installer's @install and the
+# @<date> that `pkg update` cloned the new BE from end up on the surviving BE
+# (and its /var) once the old BE is gone. Nothing in a CI image rolls back to
+# them, and they pin the pre-update copy of every replaced file (2.2 GB on
+# 202610). /etc/mnttab names the dataset mounted at /, and `zfs list -r`
+# limits the destroys to it and its children -- never another BE or pool.
+# A snapshot that is still a clone origin refuses to go (non-fatal).
+_root=$(awk -F'\t' '$2 == "/" && $3 == "zfs" { print $1 }' /etc/mnttab)
+if [ -n "${_root}" ]; then
+    zfs list -H -t snapshot -o name -r "${_root}" 2>/dev/null | while read -r _snap; do
+        echo "Destroying BE snapshot: ${_snap}"
+        zfs destroy "${_snap}" || echo "zfs destroy ${_snap} failed (non-fatal)"
+    done
+fi
+
+# illumos sata (AHCI) bug: sata_txlt_unmap() copies only the low 16 bits of
+# each SCSI UNMAP range length into the ATA DSM TRIM entry and never splits a
+# longer range, and as sata emulates no Block Limits VPD page, sd allows one
+# range of any length. A manual trim hands out zfs_trim_extent_bytes_max =
+# 128 MiB extents = 0x40000 sectors, whose low 16 bits are 0, and QEMU skips
+# count-0 entries: the trim reports "100% trimmed, completed" yet discards
+# nothing (202610 v2.1.5 shipped a 9.55 GB qcow2 for ~4 GB of live data).
+# Capping extents at 16 MiB (32768 sectors) keeps every range below 65536.
+# mdb -kw patches the running kernel only; the next boot is back to default.
+echo 'zfs_trim_extent_bytes_max/W 0t16777216' | mdb -kw ||
+    echo "cannot cap zfs_trim_extent_bytes_max (non-fatal, trim may be a no-op)"
+
 for _pool in $(zpool list -H -o name 2>/dev/null); do
+    # The destroys above free their blocks over the next txgs (async destroy,
+    # then the deferred-free window); a trim started before that skips them.
+    _i=0
+    while :; do
+        _freeing=$(zpool get -Hp -o value freeing "${_pool}" 2>/dev/null)
+        [ -z "${_freeing}" ] || [ "${_freeing}" = "0" ] && break
+        _i=$((_i + 1))
+        [ "${_i}" -ge 60 ] && { echo "freeing wait cap hit"; break; }
+        sleep 5
+    done
+    sync
+    sleep 15
     echo "Trimming pool ${_pool}..."
     if ! zpool trim -w "${_pool}" 2>/dev/null; then
         if zpool trim "${_pool}"; then
