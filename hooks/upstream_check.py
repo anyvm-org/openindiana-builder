@@ -22,6 +22,15 @@
 # There is also a non-dated "./test/" directory that must never be picked
 # up; anchoring on exactly 8 digits excludes it.
 #
+# Not every dated directory is a release. 20261107/ holds only
+# supplemental cloud and Vagrant images; its build-info.json says
+# "installation ISOs remain the October 30 snapshot". Reporting it as
+# "202611" made watch.py derive .../20261130/OI-hipster-text-20261130.iso,
+# which 404s, and the watcher failed every night from 2026-11-07. So the
+# directories are walked newest first and the first one whose own listing
+# links its text ISO (checked 2026-11-09: href="./OI-hipster-text-
+# 20261030.iso" in 20261030/) is the release.
+#
 # stdlib only (urllib.request, re, sys, os) -- no external dependencies.
 
 import os
@@ -93,9 +102,21 @@ def main():
         sys.stderr.write("upstream_check: no YYYYMMDD directory found in "
                          "%s; page shape may have changed\n" % URL)
         return 1
-    newest_date = sorted(set(dates), key=key)[-1]
-    print(newest_date[:6])
-    return 0
+    for date in sorted(set(dates), key=key, reverse=True):
+        dir_url = "%s%s/" % (URL, date)
+        try:
+            listing = fetch(dir_url)
+        except Exception as e:
+            sys.stderr.write("upstream_check: fetch of %s failed: %s\n"
+                             % (dir_url, e))
+            return 1
+        if 'href="./OI-hipster-text-%s.iso"' % date in listing:
+            print(date[:6])
+            return 0
+    sys.stderr.write("upstream_check: no directory under %s links an "
+                     "OI-hipster-text-<date>.iso; page shape may have "
+                     "changed\n" % URL)
+    return 1
 
 
 if __name__ == "__main__":
